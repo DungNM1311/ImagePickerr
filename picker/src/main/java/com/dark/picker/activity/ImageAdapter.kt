@@ -1,5 +1,6 @@
 package com.dark.picker.activity
 
+import android.net.Uri
 import android.view.LayoutInflater
 import android.view.View
 import com.dark.picker.R
@@ -23,7 +24,7 @@ class ImageAdapter : LoadMoreAdapter() {
 
     inner class ImageVH(itemView: View) : BaseRclvVH<MediaGallery>(itemView) {
         override fun onBind(data: MediaGallery) {
-            itemView.ivImageItem.setImageBitmap()
+            itemView.ivImageItem.setImageURI(Uri.parse(data.path))
         }
 
         override fun onBind(data: MediaGallery, payload: List<Any>) {
