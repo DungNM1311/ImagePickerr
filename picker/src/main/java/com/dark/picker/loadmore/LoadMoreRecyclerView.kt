@@ -2,6 +2,7 @@ package com.dark.picker.loadmore
 
 import android.content.Context
 import android.util.AttributeSet
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.dark.picker.loadmore.adapter.ILoadmoreAdapter
@@ -113,13 +114,23 @@ class LoadMoreRecyclerView : RecyclerView {
                     checkRotation = dy < 0
                 }
                 if (checkRotation && !isLoading) {
-                    val visibleItemCount: Int = mLayoutManager.childCount
-                    val totalItemCount: Int = mLayoutManager.itemCount
-                    val pastVisibleItems: Int = mLayoutManager.findFirstVisibleItemPosition()
-                    if (visibleItemCount + pastVisibleItems >= totalItemCount) {
-                        isLoading = true
-                        mLoadDataListener?.onLoadData()
+                    if(layoutManager is GridLayoutManager){
+                        val totalItemCount = (layoutManager as GridLayoutManager).itemCount
+                        val lastVisibleItem = (layoutManager as GridLayoutManager).findLastCompletelyVisibleItemPosition()
+                        if(totalItemCount <= (lastVisibleItem + 5)) {
+                            isLoading = true
+                            mLoadDataListener?.onLoadData()
+                        }
+                    } else {
+                        val visibleItemCount: Int = mLayoutManager.childCount
+                        val totalItemCount: Int = mLayoutManager.itemCount
+                        val pastVisibleItems: Int = mLayoutManager.findFirstVisibleItemPosition()
+                        if (visibleItemCount + pastVisibleItems >= totalItemCount) {
+                            isLoading = true
+                            mLoadDataListener?.onLoadData()
+                        }
                     }
+
                 }
             }
         })

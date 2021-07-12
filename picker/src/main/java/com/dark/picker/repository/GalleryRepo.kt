@@ -1,6 +1,9 @@
 package com.dark.picker.repository
 
+import android.content.ContentResolver
 import android.content.Context
+import android.os.Build
+import android.os.Bundle
 import android.provider.MediaStore
 import com.dark.picker.model.AlbumGallery
 import com.dark.picker.model.MediaGallery
@@ -27,13 +30,40 @@ object GalleryRepo {
             if (albumId.isNullOrEmpty()) null else "${MediaStore.Images.ImageColumns.BUCKET_ID} = ?"
         val selectionArgs = if (albumId.isNullOrEmpty()) null else arrayOf(albumId)
         val orderBy = MediaStore.Images.ImageColumns.DATE_MODIFIED //order data by modified
-        val cursorPhoto = resolver?.query(
-            externalUri,
-            projection,
-            selection,
-            selectionArgs,
-            "$orderBy DESC LIMIT $limit OFFSET ${page * limit}"
-        )//get all data in Cursor by sorting in DESC order
+        val cursorPhoto = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            resolver?.query(
+                externalUri,
+                projection,
+                Bundle().apply {
+                    // Selection
+                    putString(ContentResolver.QUERY_ARG_SQL_SELECTION, selection)
+                    putStringArray(
+                        ContentResolver.QUERY_ARG_SQL_SELECTION_ARGS,
+                        selectionArgs
+                    )
+                    // Sort function
+                    putStringArray(
+                        ContentResolver.QUERY_ARG_SORT_COLUMNS,
+                        arrayOf(MediaStore.Images.ImageColumns.DATE_MODIFIED)
+                    )
+                    putInt(
+                        ContentResolver.QUERY_ARG_SORT_DIRECTION,
+                        ContentResolver.QUERY_SORT_DIRECTION_DESCENDING
+                    )
+                    // Limit & Offset
+                    putInt(ContentResolver.QUERY_ARG_LIMIT, limit)
+                    putInt(ContentResolver.QUERY_ARG_OFFSET, page * limit)
+                }, null
+            )
+        } else {
+            resolver?.query(
+                externalUri,
+                projection,
+                selection,
+                selectionArgs,
+                "$orderBy DESC LIMIT $limit OFFSET ${page * limit}"
+            )//get all data in Cursor by sorting in DESC order
+        }
 
         cursorPhoto?.use { cursor ->
             if (cursor.moveToFirst()) {

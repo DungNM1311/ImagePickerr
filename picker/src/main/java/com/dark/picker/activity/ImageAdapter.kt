@@ -3,6 +3,7 @@ package com.dark.picker.activity
 import android.net.Uri
 import android.view.LayoutInflater
 import android.view.View
+import com.bumptech.glide.Glide
 import com.dark.picker.R
 import com.dark.picker.loadmore.adapter.BaseRclvVH
 import com.dark.picker.loadmore.adapter.LoadMoreAdapter
@@ -24,7 +25,11 @@ class ImageAdapter : LoadMoreAdapter() {
 
     inner class ImageVH(itemView: View) : BaseRclvVH<MediaGallery>(itemView) {
         override fun onBind(data: MediaGallery) {
-            itemView.ivImageItem.setImageURI(Uri.parse(data.path))
+            Glide.with(itemView.ivImageItem)
+                .load(data.path)
+                .centerCrop()
+                .placeholder(R.drawable.shape_blue)
+                .into(itemView.ivImageItem)
         }
 
         override fun onBind(data: MediaGallery, payload: List<Any>) {
