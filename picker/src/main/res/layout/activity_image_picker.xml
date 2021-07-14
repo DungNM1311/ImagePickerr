@@ -84,10 +84,12 @@
             android:paddingEnd="16dp"
             android:text="@string/image_picker_done"
             android:textColor="@color/highlight"
-            android:textSize="20sp"
+            android:textSize="18sp"
             android:textStyle="bold"
             android:visibility="gone"
-            app:layout_constraintEnd_toEndOf="parent" />
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
