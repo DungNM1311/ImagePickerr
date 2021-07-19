@@ -3,4 +3,5 @@
     <string name="image_picker_choose_image">Chọn ảnh</string>
     <string name="image_picker_touch_to_change">Nhấn vào đây để thay đổi</string>
     <string name="image_picker_done">Xong</string>
+    <string name="image_picker_all">Tất cả</string>
 </resources>

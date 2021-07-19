@@ -1,4 +1,4 @@
-package com.dark.picker.activity
+package com.dark.picker.fragment.adapter
 
 import android.net.Uri
 import android.view.View
@@ -6,7 +6,7 @@ import com.bumptech.glide.Glide
 import com.dark.picker.R
 import com.dark.picker.loadmore.adapter.BaseRclvVH
 import com.dark.picker.loadmore.adapter.LoadMoreAdapter
-import com.dark.picker.model.MediaGallery
+import com.dark.picker.model.ImageGallery
 import com.dark.picker.utils.setSafeOnClickListener
 import kotlinx.android.synthetic.main.item_image.view.*
 
@@ -40,14 +40,14 @@ class ImageAdapter : LoadMoreAdapter() {
     override fun reset(newItems: List<*>?) {
         listSelected.clear()
         val list = newItems?.map {
-            MediaGalleryData(it as MediaGallery)
+            MediaGalleryData(it as ImageGallery)
         }
         super.reset(list)
     }
 
     override fun addMoreItem(itemList: List<*>, stillMore: Boolean) {
         val list = itemList?.map {
-            MediaGalleryData(it as MediaGallery)
+            MediaGalleryData(it as ImageGallery)
         }
         super.addMoreItem(list, stillMore)
     }
@@ -137,7 +137,7 @@ class ImageAdapter : LoadMoreAdapter() {
     }
 
 
-    inner class MediaGalleryData(val data: MediaGallery) {
+    inner class MediaGalleryData(val data: ImageGallery) {
         var isSelected = false
     }
 }

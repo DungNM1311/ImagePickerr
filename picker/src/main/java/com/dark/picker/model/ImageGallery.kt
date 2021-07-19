@@ -1,6 +1,6 @@
 package com.dark.picker.model
 
-class MediaGallery() {
+class ImageGallery() {
     var id: String? = null
     var path: String? = null
     var orderSelected: Int = -1

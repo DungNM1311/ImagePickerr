@@ -23,6 +23,7 @@
 
 
         <LinearLayout
+            android:id="@+id/llImagePickerChooseAlbum"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="center"
@@ -36,7 +37,7 @@
                 android:id="@+id/tvAlbumName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/image_picker_choose_image"
+                android:text="@string/image_picker_all"
                 android:textColor="@color/title_text"
                 android:textSize="20sp"
                 android:textStyle="bold" />
@@ -93,13 +94,9 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <com.dark.picker.loadmore.LoadMoreRecyclerView
-        android:id="@+id/rclvImagePickerImage"
+    <FrameLayout
+        android:id="@+id/flImagePickerContainer"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:spanCount="3" />
+        android:layout_height="match_parent" />
 
 </LinearLayout>

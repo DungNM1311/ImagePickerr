@@ -5,8 +5,9 @@ import android.content.Context
 import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
+import com.dark.picker.R
 import com.dark.picker.model.AlbumGallery
-import com.dark.picker.model.MediaGallery
+import com.dark.picker.model.ImageGallery
 
 object GalleryRepo {
     fun getListGalleryPhoto(
@@ -14,9 +15,9 @@ object GalleryRepo {
         albumId: String?,
         page: Int,
         limit: Int
-    ): MutableList<MediaGallery> {
+    ): MutableList<ImageGallery> {
         val resolver = context.contentResolver
-        val listPhoto: MutableList<MediaGallery> = mutableListOf()
+        val listPhoto: MutableList<ImageGallery> = mutableListOf()
         val externalUri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI
         val projection = arrayOf(
             MediaStore.Images.ImageColumns.BUCKET_ID,
@@ -72,7 +73,7 @@ object GalleryRepo {
                         cursor.getString(cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATA))
                     val id =
                         cursor.getString(cursor.getColumnIndex(MediaStore.Images.ImageColumns._ID))
-                    listPhoto.add(MediaGallery().apply {
+                    listPhoto.add(ImageGallery().apply {
                         this.id = id
                         this.path = path
                     })
@@ -83,7 +84,7 @@ object GalleryRepo {
         return listPhoto
     }
 
-    fun getListGalleryAlbum(context: Context): MutableList<AlbumGallery> {
+    fun getListGalleryAlbum(context: Context, hasAll: Boolean = false): MutableList<AlbumGallery> {
         val resolver = context.contentResolver
         val albums = mutableListOf<AlbumGallery>()
         val externalUri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI
@@ -138,6 +139,18 @@ object GalleryRepo {
                         }
 
                 } while (cursor.moveToNext())
+            }
+            if (!albums.isNullOrEmpty() && hasAll) {
+                var count = 0L
+                albums.forEach {
+                    count += it.count
+                }
+                val allAlbum = AlbumGallery()
+                allAlbum.id = null
+                allAlbum.name = context.getString(R.string.image_picker_all)
+                allAlbum.count = count
+                allAlbum.imagePath = albums.firstOrNull()?.imagePath
+                albums.add(0, allAlbum)
             }
 //             cursor.close()
         }

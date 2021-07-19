@@ -1,4 +1,4 @@
-package com.dark.picker.activity
+package com.dark.picker.utils
 
 import android.os.Handler
 import android.os.Looper

@@ -3,10 +3,13 @@
     package="com.dark.picker">
 
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.CAMERA" />
+
 
     <application>
-
-        <activity android:name=".activity.ImagePickerActivity" />
+        <activity
+            android:name=".activity.ImagePickerActivity"
+            android:theme="@style/ImagePicker" />
 
     </application>
 
