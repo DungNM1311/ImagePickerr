@@ -1,0 +1,130 @@
+apply plugin: 'maven-publish'
+apply plugin: 'signing'
+apply plugin: 'org.jetbrains.dokka'
+
+
+task androidSourcesJar(type: Jar) {
+    archiveClassifier.set('sources')
+    if (project.plugins.findPlugin("com.android.library")) {
+        // For Android libraries
+        from android.sourceSets.main.java.srcDirs
+        from android.sourceSets.main.kotlin.srcDirs
+    } else {
+        // For pure Kotlin libraries, in case you have them
+        from sourceSets.main.java.srcDirs
+        from sourceSets.main.kotlin.srcDirs
+    }
+}
+
+tasks.withType(dokkaHtmlPartial.getClass()).configureEach {
+    pluginsMapConfiguration.set(
+            ["org.jetbrains.dokka.base.DokkaBase": """{ "separateInheritedMembers": true}"""]
+    )
+}
+
+task androidJavadoc(type: Javadoc) {
+    source = android.sourceSets.main.java.srcDirs
+    classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
+    android.libraryVariants.all { variant ->
+        if (variant.name == 'release') {
+            owner.classpath += variant.javaCompileProvider.get().classpath
+        }
+    }
+
+    exclude '**/R.html', '**/R.*.html', '**/index.html'
+    options.encoding 'utf-8'
+    options {
+        addStringOption 'docencoding', 'utf-8'
+        addStringOption 'charset', 'utf-8'
+        links 'https://docs.oracle.com/javase/7/docs/api/'
+        links 'https://d.android.com/reference'
+        links 'https://developer.android.com/reference/androidx/'
+    }
+}
+
+task javadocJar(type: Jar, dependsOn: dokkaJavadoc) {
+    archiveClassifier.set('javadoc')
+    from dokkaJavadoc.outputDirectory
+}
+artifacts {
+    archives androidSourcesJar
+    archives javadocJar
+}
+
+group = PUBLISH_GROUP_ID
+version = PUBLISH_VERSION
+
+
+afterEvaluate {
+    publishing {
+        publications {
+            release(MavenPublication) {
+                // The coordinates of the library, being set from variables that
+                // we'll set up later
+                groupId PUBLISH_GROUP_ID
+                artifactId PUBLISH_ARTIFACT_ID
+                version PUBLISH_VERSION
+
+                // Two artifacts, the `aar` (or `jar`) and the sources
+                from components.release
+
+                artifact androidSourcesJar
+                artifact javadocJar
+                pom {
+                    name = PUBLISH_ARTIFACT_ID
+                    description = 'Image Picker official Android SDK'
+                    url = 'https://github.com/DungNM1311/ImagePickerr'
+                    licenses {
+                        license {
+                            name = 'Stream License'
+                            url = 'https://github.com/DungNM1311/ImagePickerr/blob/main/LICENSE'
+                        }
+                    }
+                    developers {
+                        developer {
+                            id = 'dungnm1311'
+                            name = 'DungNM'
+                            email = 'nguyenminhdung321998@gmail.com'
+                        }
+                        // Add all other devs here...
+                    }
+
+                    // Version control info - if you're using GitHub, follow the
+                    // format as seen here
+                    scm {
+                        connection = 'https://github.com/DungNM1311/ImagePickerr'
+                        developerConnection = 'https://github.com/DungNM1311/ImagePickerr'
+                        url = 'https://github.com/DungNM1311/ImagePickerr'
+                    }
+                }
+//                pom.withXml {
+//                    def dependenciesNode = asNode().appendNode('dependencies')
+//                    configurations.implementation.allDependencies.withType(ModuleDependency) { ModuleDependency dp ->
+//                        def dependencyNode = dependenciesNode.appendNode('dependency')
+//                        dependencyNode.appendNode('groupId', dp.group)
+//                        dependencyNode.appendNode('artifactId', dp.name)
+//                        dependencyNode.appendNode('version', dp.version)
+//
+//                        // for exclusions
+//                        if (dp.excludeRules.size() > 0) {
+//                            def exclusions = dependencyNode.appendNode('exclusions')
+//                            dp.excludeRules.each { ExcludeRule ex ->
+//                                def exclusion = exclusions.appendNode('exclusion')
+//                                exclusion.appendNode('groupId', ex.group)
+//                                exclusion.appendNode('artifactId', ex.module)
+//                            }
+//                        } else if (!dp.properties.excludeRules.empty) {
+//                            // Otherwise add specified exclude rules
+//                            final exclusionsNode = dependencyNode.appendNode('exclusions')
+//                            dp.properties.excludeRules.each { ExcludeRule rule ->
+//                                def exclusion = exclusionsNode.appendNode('exclusion')
+//                                exclusion.appendNode('groupId', rule.group ?: '*')
+//                                exclusion.appendNode('artifactId', rule.module ?: '*')
+//                            }
+//                        }
+//                    }
+//                }
+            }
+        }
+    }
+}
