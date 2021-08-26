@@ -30,7 +30,61 @@
 -repackageclasses ''
 -allowaccessmodification
 
+#-keep class com.vnpay.ekyc.data.entities.response.** { *; }
+
+-keepclassmembernames class * {
+    native <methods>;
+}
+
+#-keepclassmembers enum * { *; }
+
+#-optimizations !library/gson
+
+-keepattributes Signature
+
+# For using GSON @Expose annotation
+-keepattributes Annotation
+#
+# Gson specific classes
+-dontwarn sun.misc.**
+-keep class * implements com.google.gson.TypeAdapter
+-keep class * implements com.google.gson.TypeAdapterFactory
+-keep class * implements com.google.gson.JsonSerializer
+-keep class * implements com.google.gson.JsonDeserializer
+
+# Prevent R8 from leaving Data object members always null
+-keepclassmembers,allowobfuscation class * {
+  @com.google.gson.annotations.SerializedName <fields>;
+}
+#-keepnames class com.vnpay.ekyc.ui** {  }
 -keep public class * extends android.app.Activity
 -keep public class * extends android.app.Dialog
 -keep public class * extends androidx.fragment.app.Fragment
 -keep public class * extends android.view.View
+
+-assumenosideeffects class android.util.Log {
+    public static boolean isLoggable(java.lang.String, int);
+    public static int v(...);
+    public static int i(...);
+    public static int w(...);
+    public static int wtf(...);
+    public static int d(...);
+    public static int e(...);
+    public static int wtf(...);
+    public static int println(...);
+    public static java.lang.String getStackTraceString(java.lang.Throwable);
+
+}
+
+-assumenosideeffects class java.lang.Throwable {
+    public void printStackTrace();
+}
+
+-assumenosideeffects class java.lang.Exception {
+    public void printStackTrace();
+}
+
+-assumenosideeffects class java.io.PrintStream {
+     public void println(%);
+     public void println(**);
+}
