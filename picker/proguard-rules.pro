@@ -19,3 +19,18 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
+-dontusemixedcaseclassnames
+-dontskipnonpubliclibraryclasses
+-verbose
+-dontskipnonpubliclibraryclasses
+-dontskipnonpubliclibraryclassmembers
+-dontpreverify
+-optimizationpasses 5
+-overloadaggressively
+-repackageclasses ''
+-allowaccessmodification
+
+-keep public class * extends android.app.Activity
+-keep public class * extends android.app.Dialog
+-keep public class * extends androidx.fragment.app.Fragment
+-keep public class * extends android.view.View
